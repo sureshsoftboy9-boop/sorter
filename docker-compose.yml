@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  photosort:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      # Mount directories for photos and cache
+      - photosort_data:/app
+    environment:
+      - FLASK_APP=app.py
+      - FLASK_ENV=production
+    restart: unless-stopped
+    container_name: photosort
+
+volumes:
+  photosort_data:
+    driver: local

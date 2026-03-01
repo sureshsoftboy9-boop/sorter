@@ -1,0 +1,46 @@
+# Advanced Docker Compose with Photo Directory Mounts
+# Use this if you want to mount your photo directories from the host
+
+version: '3.8'
+
+services:
+  photosort:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      # App data (persistent)
+      - photosort_data:/app
+      
+      # Photo directories (CUSTOMIZE THESE PATHS)
+      # Replace /path/to with your actual directory paths
+      - /path/to/source/photos:/photos/source
+      - /path/to/sorted/photos:/photos/sorted
+      
+    environment:
+      - FLASK_APP=app.py
+      - FLASK_ENV=production
+    restart: unless-stopped
+    container_name: photosort
+    
+    # Optional: Resource limits
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '1'
+          memory: 1G
+
+volumes:
+  photosort_data:
+    driver: local
+
+# INSTRUCTIONS:
+# 1. Replace /path/to/source/photos with your actual source directory
+# 2. Replace /path/to/sorted/photos with your actual destination directory
+# 3. Then use in app:
+#    - Source: /photos/source
+#    - Destination: /photos/sorted
+# 4. Run: docker-compose -f docker-compose.advanced.yml up -d
